@@ -64,3 +64,34 @@ export interface SplitIcon {
   height: number;
   name: string;
 }
+
+export type ExpireOption = '1h' | '24h' | '7d' | '30d' | 'never';
+
+export interface ShareConfig {
+  expiresAt: number | null;
+  passwordHash: string | null;
+  createdAt: number;
+}
+
+export interface SharedIconItem {
+  name: string;
+  width: number;
+  height: number;
+  addedAt: number;
+  dataUrl: string;
+}
+
+export interface SharePayload {
+  projectName: string;
+  projectDescription: string;
+  icons: SharedIconItem[];
+  config: ShareConfig;
+}
+
+export interface ShareParseResult {
+  valid: boolean;
+  expired: boolean;
+  needPassword: boolean;
+  payload?: SharePayload;
+  error?: string;
+}

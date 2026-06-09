@@ -17,7 +17,9 @@ import {
   AlertCircle,
   RefreshCw,
   AlertTriangle,
+  Link as LinkIcon,
 } from 'lucide-react';
+import ShareDialog from '@/components/ShareDialog';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '@/store/useAppStore';
 import { createIconItemsFromFiles, formatDate, cn } from '@/utils';
@@ -40,6 +42,7 @@ export default function Library() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loadStats, setLoadStats] = useState<{ total: number; loaded: number; failed: number } | null>(null);
   const [loadAttempt, setLoadAttempt] = useState(0);
+  const [sharingProject, setSharingProject] = useState<Project | null>(null);
 
   const {
     projects,
@@ -355,6 +358,16 @@ export default function Library() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {activeProject && (
+            <button
+              onClick={() => setSharingProject(activeProject)}
+              className="btn btn-secondary"
+              title="分享项目"
+            >
+              <LinkIcon className="w-4 h-4" />
+              分享
+            </button>
+          )}
           {activeProject && projectIcons.length > 0 && (
             <button onClick={generateFromProject} className="btn btn-primary">
               <Grid3X3 className="w-4 h-4" />
@@ -475,6 +488,13 @@ export default function Library() {
                           <ChevronRight className="w-4 h-4 text-neon-cyan shrink-0 mt-1" />
                         )}
                         <div className="hidden group-hover:flex items-center gap-0.5 shrink-0 mt-0.5">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setSharingProject(p); }}
+                            className="w-6 h-6 rounded hover:bg-neon-cyan/15 flex items-center justify-center text-slate-500 hover:text-neon-cyan"
+                            title="分享项目"
+                          >
+                            <LinkIcon className="w-3 h-3" />
+                          </button>
                           <button
                             onClick={(e) => { e.stopPropagation(); startRename(p); }}
                             className="w-6 h-6 rounded hover:bg-white/10 flex items-center justify-center text-slate-500 hover:text-slate-300"
@@ -615,6 +635,10 @@ export default function Library() {
             删除图标
           </button>
         </div>
+      )}
+
+      {sharingProject && (
+        <ShareDialog project={sharingProject} onClose={() => setSharingProject(null)} />
       )}
     </div>
   );
